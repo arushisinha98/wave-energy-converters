@@ -10,7 +10,7 @@ from tensorflow.keras.losses import MeanAbsolutePercentageError as MAPE
 from random import choice, random
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from IPython.display import display
-from skleanr.model_selection import LinearRegression
+from sklearn.model_selection import LinearRegression
 from IPython.core.display import display, HTML
 from tqdm.keras import TqdmCallback
 
