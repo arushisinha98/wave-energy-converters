@@ -17,18 +17,37 @@ from tqdm.keras import TqdmCallback
 # check if the nvidia-docker container supplied GPU and if tensorflow is using it
 tf.config.experimental.list_physical_devices('GPU')
 
-# import data
+# extract files
+cities = "Sydney Tasmania Perth Adelaide".split()
+xs_tests = dict()
+ys_tests = dict()
+xs_trains = dict()
+ys_trains = dict()
 
-
-# split into inputs and outputs and normalize
-
-
+for city in cities:
+  csvfile = open(f"/notebooks/WECs_dataset/{city}_Data.csv")
+  reader = csv.reader(csvfile, delimiter = ",")
+  rows = [[float(v) for v in row] for row in reader]
+  rows = no.asarray(rows, dtype = "float32")
+  xs = rows[:,0:32]
+  ys = rows[:,32:49]
+  
+  # standardize xs and ys
+  ys = ys / np.max(ys)
+  xs = xs / np.max(xs)
+  
+  xs_train, xs_test, ys_train, ys_test = train_test_split(xs, ys, test_size = 0.2, random_state = 100)
+  xs_trains[city] = xs_train
+  ys_trains[city] = ys_train
+  xs_tests[city] = xs_test
+  ys_tests[city] = ys_test
 
 # MAPE
 def get_error(city, model):
+  """ Returns MAPE by calculating ys_pred from xs_test array and comparing to ys_test array"""
   ys_pred = model.predict(xs_tests[city])
   mape = tf.keras.losses.MeanAbsolutePercentageError()
-  error = mape(ys_pred, ys_test[city]).numpy()
+  error = mape(ys_pred, ys_tests[city]).numpy()
   return error
 
 # model training
@@ -69,13 +88,13 @@ def train_model(city, patience = 100, verbose = 0):
   os.remove('tmp.h5')
   return model, loss_hist
   
-for city in cities[1:]:
+for city in cities:
   print(city)
   model, loss_hist = train_model(city,
                                  patience = 100,
                                  verbose = 1)
   model.save(f"{city}_model.h5")
-  with open(f"{city"_hist.pickle", "wb") as f:
+  with open(f"{city}_hist.pickle", "wb") as f:
     pickle.dump(loss_hist, f)
   linear_model = LinearRegression().fit(xs_trains[city], ys_trains[city])
   error1 = get_error(city, linear_model)
