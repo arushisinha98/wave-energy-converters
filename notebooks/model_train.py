@@ -25,7 +25,7 @@ xs_trains = dict()
 ys_trains = dict()
 
 for city in cities:
-  csvfile = open(f"/notebooks/WECs_dataset/{city}_Data.csv")
+  csvfile = open(f"/notebooks/WECs_DataSet/{city}_Data.csv")
   reader = csv.reader(csvfile, delimiter = ",")
   rows = [[float(v) for v in row] for row in reader]
   rows = no.asarray(rows, dtype = "float32")
