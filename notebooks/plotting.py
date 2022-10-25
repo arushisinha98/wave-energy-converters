@@ -24,7 +24,7 @@ xs_valids = dict()
 ys_valids = dict()
 
 for file in files:
-  csvfile = open(f"/notebooks/WECs_dataset/{file}_Data.csv")
+  csvfile = open(f"/notebooks/WECs_DataSet/{file}_Data.csv")
   reader = csv.reader(csvfile, delimiter = ",")
   rows = [[float(v) for v in row] for row in reader]
   rows = no.asarray(rows, dtype = "float32")
